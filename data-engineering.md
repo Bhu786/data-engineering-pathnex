@@ -29,3 +29,26 @@ Blue
 
 Green Group:
 Green
+
+
+===============================================
+partition
+parallel process
+scaling horizontal vertical
+distributed storage 
+server/machine
+cluster
+
+============================
+
+
+
+
+
+
+
+
+
+
+
+
