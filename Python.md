@@ -1834,3 +1834,1483 @@ end loop and conditionbal
 =======================
 ================================
 ============================================
+# functions
+Based on the session on **[Python Functions & Data Structures (Lists, Sets & Dictionaries)](http://www.youtube.com/watch?v=2WV_Ac9D72M)**, here are all the concepts explained in detail, followed by master notes and interview preparation questions.
+
+---
+
+**Master Notes: Core Concepts & Syntax**
+
+### 1. Python Functions
+
+Functions allow writing reusable blocks of code, preventing code repetition (DRY principle) and making pipelines scalable.
+
+* **Definition & Syntax:**
+```python
+def function_name(parameter1, parameter2):
+    # Logic
+    return result
+
+```
+
+
+* **Parameters vs. Arguments:**
+* **Parameters:** Variables declared inside the function definition (e.g., `a, b` in `def sum(a, b)`).
+* **Arguments:** Actual values passed when calling the function (e.g., `10, 20` in `sum(10, 20)`).
+
+
+* **Return vs. Print:**
+* `print()`: Displays output directly to the console; returns `None`. Cannot assign output to another variable.
+* `return`: Sends the evaluated value back to the caller. Allows storing the result in a variable (`result = sum(10, 20)`) for downstream operations.
+
+
+* **Types of Function Arguments:**
+* **Default Parameters:** Provides default values if missing during call (`def greet(name="Guest"):`).
+* **Keyword Arguments:** Passing arguments explicitly by key (`sum(b=20, a=10)`) regardless of order.
+* **Arbitrary Arguments (`*args`):** Accepts a dynamic number of positional arguments as a **tuple** (`def dynamic_sum(*args):`).
+* **Keyword Arbitrary Arguments (`**kwargs`):** Accepts dynamic key-value arguments as a **dictionary**.
+
+
+* **Lambda Functions (Anonymous Functions):**
+* Single-line functions created without using `def`.
+* **Syntax:** `lambda arguments: expression`
+* **Example:** `square = lambda x: x ** 2`
+* **Use Case:** Light data transformations (frequently used in PySpark RDDs/DataFrames). Does not occupy named memory footprint.
+
+
+
+---
+
+### 2. Built-in Data Structures Overview
+
+Data structures store and organize data extracted from databases/files for processing inside Python.
+
+| Data Structure | Bracket | Mutability | Duplicates Allowed | Key Characteristic / Use Case |
+| --- | --- | --- | --- | --- |
+| **Tuple** | `()` | Immurtable | Yes | Fixed lookups (e.g., calculator keys, configuration settings). |
+| **List** | `[]` | Mutable | Yes | General-purpose ordered sequences; supports insertion, modification, deletion. |
+| **Set** | `{}` | Mutable | No | Unordered collections of unique elements (explained in next module). |
+| **Dictionary** | `{}` | Mutable | Keys Unique | Key-value pairs for structured mapping (explained in next module). |
+
+> *Note for Data Engineers:* User-defined data structures (Linked Lists, Trees, Graphs) are rarely implemented manually in Python DE roles because large volume processing is delegated to distributed frameworks (e.g., Apache Spark).
+
+---
+
+### 3. Deep-Dive: Python Lists & Operations
+
+Lists are ordered, zero-indexed, mutable sequences storing mixed data types.
+
+**List Modification & Operations:**
+
+* **`append(element)`**: Appends a single item to the very end of the list `[00:40:51]`.
+* **`insert(index, element)`**: Inserts an item at a specific zero-based index `[00:41:23]`.
+* **`extend([iterable])`**: Unpacks items from an iterable and appends each element individually `[00:42:57]`.
+* **Update via Index**: `list_var[index] = new_value` `[00:44:06]`.
+* **`pop(index)`**: Removes and returns element at index (defaults to last element if index omitted) `[00:44:24]`.
+* **`remove(value)`**: Removes the first occurrence of a specific value `[00:45:09]`.
+
+---
+
+**Interview Questions & Answers**
+
+1. **What is the key structural difference between `*args` and `**kwargs` in Python functions?**
+* **Answer:** `*args` collects extra positional arguments into a **tuple**, whereas `**kwargs` collects extra keyword arguments into a **dictionary**.
+
+
+2. **When should a Data Engineer use a Tuple instead of a List?**
+* **Answer:** Tuples are immutable and read-only. Use them when creating fixed schema structures, static lookups, or configuration parameters that must strictly be prevented from accidental runtime modifications.
+
+
+3. **What is the output difference between `list.append([1, 2])` and `list.extend([1, 2])`?**
+* **Answer:** `append([1, 2])` adds the entire list as a single nested element at the end of the list `[00:42:36]`. `extend([1, 2])` iterates through `[1, 2]` and appends each element separately to the original list `[00:43:27]`.
+
+
+4. **Why are Lambda functions preferred in Big Data / PySpark transformations?**
+* **Answer:** Lambda functions enable inline execution without polluting the namespace or allocating explicit named functional overhead, making them suitable for inline mapping and filtering operations across Spark RDDs.
+
+
+5. **How do Python Data Structures handle multiple data types?**
+* **Answer:** Python Lists and Tuples are heterogeneous; they can simultaneously store integers, floats, strings, or even nested lists/dictionaries `[00:39:38]`.
+* =========================
+* =================================
+Python provides four primary built-in data structures: **List**, **Tuple**, **Set**, and **Dictionary**. The table below compares their core differences:
+
+| Feature | List (`[]`) | Tuple (`()`) | Set (`{}`) | Dictionary (`{key: value}`) |
+| --- | --- | --- | --- | --- |
+| **Mutability** | **Mutable** (modifiable) | **Immutable** (read-only) | **Mutable** (elements can be added/removed) | **Mutable** (values & keys can be updated) |
+| **Order** | **Ordered** (indexable) | **Ordered** (indexable) | **Unordered** (no indexing) | **Ordered** (insertion order preserved) |
+| **Duplicates** | **Allowed** | **Allowed** | **Not Allowed** (unique elements only) | **Keys Unique**, values can duplicate |
+| **Syntax** | `[1, 2, "a"]` | `(1, 2, "a")` | `{1, 2, "a"}` | `{"id": 1, "name": "a"}` |
+| **Lookup Time** | $O(n)$ linear lookup | $O(n)$ linear lookup | $O(1)$ fast hash lookup | $O(1)$ fast key lookup |
+| **Primary Use Case** | Sequential collections requiring updates/modifications. | Fixed lookups, constant config data, coordinates. | Removing duplicate values, set algebra (union/intersection). | Key-value mapping, database record representations. |
+
+**Key Takeaways**
+
+* **Lists vs. Tuples:** Use Lists when your dataset needs to dynamically grow, shrink, or change. Use Tuples when the structure must be protected against runtime modifications.
+* **Sets vs. Dictionaries:** Use Sets when existence and uniqueness of elements matter most. Use Dictionaries when elements are explicitly mapped to unique labels or key names.
+
+================================
+====================================
+==============================================
+# Python Data Structures, Comprehensions & Exception Handling — Master Notes
+
+## 1. List Slicing
+
+List slicing is used to extract a portion of a list.
+
+### Syntax
+
+```python
+list[start:end:step]
+```
+
+* `start` → starting index
+* `end` → ending index, **not included**
+* `step` → how many positions to move
+
+### Example
+
+```python
+numbers = [10, 20, 30, 40, 50, 60]
+
+print(numbers[0:5:2])
+```
+
+Output:
+
+```text
+[10, 30, 50]
+```
+
+### Important
+
+```python
+numbers[:3]
+```
+
+Means start from beginning.
+
+```python
+numbers[3:]
+```
+
+Means go from index `3` to the end.
+
+```python
+numbers[:]
+```
+
+Means copy the complete list.
+
+### Reverse a List
+
+```python
+numbers[::-1]
+```
+
+Output:
+
+```text
+[60, 50, 40, 30, 20, 10]
+```
+
+### Interview Question
+
+**Q: How do you reverse a list in Python?**
+
+```python
+numbers[::-1]
+```
+
+Another option:
+
+```python
+numbers.reverse()
+```
+
+Important difference:
+
+* `[::-1]` → creates/returns a reversed sequence
+* `.reverse()` → modifies the original list
+
+---
+
+# 2. Important List Built-in Functions
+
+## `len()`
+
+Returns the number of elements.
+
+```python
+numbers = [10, 20, 30]
+
+print(len(numbers))
+```
+
+Output:
+
+```text
+3
+```
+
+---
+
+## `max()`
+
+Returns the largest value.
+
+```python
+numbers = [10, 50, 20, 40]
+
+print(max(numbers))
+```
+
+Output:
+
+```text
+50
+```
+
+---
+
+## `min()`
+
+Returns the smallest value.
+
+```python
+numbers = [10, 50, 20, 40]
+
+print(min(numbers))
+```
+
+Output:
+
+```text
+10
+```
+
+---
+
+## `sort()`
+
+Sorts the list in ascending order.
+
+```python
+numbers = [40, 10, 30, 20]
+
+numbers.sort()
+
+print(numbers)
+```
+
+Output:
+
+```text
+[10, 20, 30, 40]
+```
+
+### Descending Order
+
+```python
+numbers.sort(reverse=True)
+```
+
+Output:
+
+```text
+[40, 30, 20, 10]
+```
+
+### Interview Question
+
+**Q: Difference between `sort()` and `sorted()`?**
+
+`sort()` modifies the original list.
+
+```python
+numbers.sort()
+```
+
+`sorted()` returns a new sorted list.
+
+```python
+result = sorted(numbers)
+```
+
+---
+
+# 3. Sets
+
+A set is an **unordered collection of unique elements**.
+
+```python
+numbers = {10, 20, 30, 20, 10}
+
+print(numbers)
+```
+
+Conceptually:
+
+```text
+{10, 20, 30}
+```
+
+Duplicate values are automatically removed.
+
+## Why use Set?
+
+Mainly when you need:
+
+* Unique values
+* Fast membership checking
+* Set operations such as union/intersection
+
+---
+
+# 4. Creating a Set
+
+```python
+numbers = {10, 20, 30}
+```
+
+### Empty Set
+
+This is important:
+
+```python
+set()
+```
+
+NOT:
+
+```python
+{}
+```
+
+Because:
+
+```python
+{}
+```
+
+creates an empty dictionary.
+
+### Interview Question
+
+**Q: How do you create an empty set in Python?**
+
+```python
+s = set()
+```
+
+---
+
+# 5. Adding Elements to a Set
+
+## `add()`
+
+Adds one element.
+
+```python
+numbers = {10, 20}
+
+numbers.add(30)
+
+print(numbers)
+```
+
+Result:
+
+```text
+{10, 20, 30}
+```
+
+---
+
+## `update()`
+
+Adds multiple elements.
+
+```python
+numbers = {10, 20}
+
+numbers.update([30, 40, 50])
+
+print(numbers)
+```
+
+Result:
+
+```text
+{10, 20, 30, 40, 50}
+```
+
+### Difference
+
+```python
+s.add(10)
+```
+
+→ adds one element.
+
+```python
+s.update([10, 20, 30])
+```
+
+→ adds multiple elements.
+
+---
+
+# 6. Removing Elements from Set
+
+## `remove()`
+
+```python
+numbers = {10, 20, 30}
+
+numbers.remove(20)
+```
+
+If the element doesn't exist:
+
+```python
+numbers.remove(50)
+```
+
+Python raises:
+
+```text
+KeyError
+```
+
+---
+
+## `discard()`
+
+```python
+numbers = {10, 20, 30}
+
+numbers.discard(50)
+```
+
+No error occurs even though `50` doesn't exist.
+
+### Most Important Difference
+
+| Method      | Element exists | Element doesn't exist |
+| ----------- | -------------- | --------------------- |
+| `remove()`  | Removes it     | `KeyError`            |
+| `discard()` | Removes it     | Does nothing          |
+
+### Interview Question
+
+**Q: Difference between `remove()` and `discard()` in a set?**
+
+> `remove()` raises `KeyError` when the element doesn't exist, whereas `discard()` silently does nothing.
+
+---
+
+# 7. Dictionaries
+
+A dictionary stores data in **key-value pairs**.
+
+```python
+student = {
+    "name": "Bhupendra",
+    "age": 25,
+    "city": "Delhi"
+}
+```
+
+Structure:
+
+```text
+key       value
+----------------
+name      Bhupendra
+age       25
+city      Delhi
+```
+
+---
+
+# 8. Access Dictionary Values
+
+```python
+student["name"]
+```
+
+Output:
+
+```text
+Bhupendra
+```
+
+Dictionary values are accessed using their keys.
+
+### Important
+
+```python
+student["salary"]
+```
+
+If `"salary"` doesn't exist, Python raises:
+
+```text
+KeyError
+```
+
+Safer approach:
+
+```python
+student.get("salary")
+```
+
+This returns:
+
+```text
+None
+```
+
+if the key doesn't exist.
+
+---
+
+# 9. Adding and Updating Dictionary Values
+
+```python
+student = {
+    "name": "Bhupendra"
+}
+```
+
+Add:
+
+```python
+student["age"] = 25
+```
+
+Update:
+
+```python
+student["age"] = 26
+```
+
+The same syntax is used for both adding and updating.
+
+---
+
+# 10. Removing Dictionary Elements
+
+## `pop()`
+
+Removes a specific key.
+
+```python
+student = {
+    "name": "Bhupendra",
+    "age": 25
+}
+
+student.pop("age")
+```
+
+Result:
+
+```python
+{
+    "name": "Bhupendra"
+}
+```
+
+---
+
+## `popitem()`
+
+Removes the last inserted key-value pair.
+
+```python
+student.popitem()
+```
+
+---
+
+# 11. Dictionary Iteration
+
+## `keys()`
+
+Returns dictionary keys.
+
+```python
+student = {
+    "name": "Bhupendra",
+    "age": 25
+}
+
+for key in student.keys():
+    print(key)
+```
+
+Output:
+
+```text
+name
+age
+```
+
+---
+
+## `values()`
+
+Returns values.
+
+```python
+for value in student.values():
+    print(value)
+```
+
+Output:
+
+```text
+Bhupendra
+25
+```
+
+---
+
+## `items()`
+
+Returns key-value pairs.
+
+```python
+for key, value in student.items():
+    print(key, value)
+```
+
+Output:
+
+```text
+name Bhupendra
+age 25
+```
+
+### Interview Shortcut
+
+Remember:
+
+```text
+keys()   → keys
+values() → values
+items()  → key + value
+```
+
+---
+
+# 12. List Comprehension
+
+List comprehension is a concise way to create a list using an expression and iteration.
+
+### Normal Loop
+
+```python
+numbers = [1, 2, 3, 4, 5]
+
+squares = []
+
+for number in numbers:
+    squares.append(number * number)
+```
+
+### List Comprehension
+
+```python
+squares = [number * number for number in numbers]
+```
+
+Result:
+
+```text
+[1, 4, 9, 16, 25]
+```
+
+### Basic Syntax
+
+```python
+[expression for item in iterable]
+```
+
+---
+
+# 13. List Comprehension with Condition
+
+Example:
+
+```python
+numbers = [1, 2, 3, 4, 5, 6]
+
+even_numbers = [
+    number
+    for number in numbers
+    if number % 2 == 0
+]
+```
+
+Result:
+
+```text
+[2, 4, 6]
+```
+
+Syntax:
+
+```python
+[expression for item in iterable if condition]
+```
+
+### Interview Question
+
+**Q: Why use list comprehension?**
+
+> It provides a concise and readable way to create a list from an iterable, often replacing a simple loop.
+
+---
+
+# 14. Dictionary Comprehension
+
+Dictionary comprehension is used to create dictionaries concisely.
+
+### Example
+
+```python
+numbers = [1, 2, 3, 4]
+
+squares = {
+    number: number * number
+    for number in numbers
+}
+```
+
+Result:
+
+```python
+{
+    1: 1,
+    2: 4,
+    3: 9,
+    4: 16
+}
+```
+
+### Syntax
+
+```python
+{key_expression: value_expression for item in iterable}
+```
+
+---
+
+# 15. Dictionary Comprehension with Condition
+
+```python
+numbers = [1, 2, 3, 4, 5, 6]
+
+even_squares = {
+    number: number * number
+    for number in numbers
+    if number % 2 == 0
+}
+```
+
+Result:
+
+```python
+{
+    2: 4,
+    4: 16,
+    6: 36
+}
+```
+
+---
+
+# 16. Exception Handling
+
+Exception handling is used to handle runtime errors so that the application can respond gracefully instead of terminating unexpectedly.
+
+Main keywords:
+
+```text
+try
+except
+else
+finally
+```
+
+---
+
+# 17. `try` and `except`
+
+Code that may generate an exception goes inside `try`.
+
+```python
+try:
+    number = int(input("Enter number: "))
+    print(10 / number)
+
+except:
+    print("Something went wrong")
+```
+
+If the user enters:
+
+```text
+abc
+```
+
+`int()` causes:
+
+```text
+ValueError
+```
+
+If the user enters:
+
+```text
+0
+```
+
+division causes:
+
+```text
+ZeroDivisionError
+```
+
+---
+
+# 18. Handle Specific Exceptions
+
+Instead of using a generic `except`, handle specific exceptions.
+
+```python
+try:
+    number = int(input("Enter number: "))
+    result = 10 / number
+
+except ValueError:
+    print("Please enter a valid number")
+
+except ZeroDivisionError:
+    print("Cannot divide by zero")
+```
+
+This is better because each error gets an appropriate response.
+
+### Interview Question
+
+**Q: Why should we avoid a bare `except`?**
+
+Because it catches almost every exception and can hide programming errors. Specific exception handling makes debugging and error handling clearer.
+
+---
+
+# 19. `else` Block
+
+`else` executes **only when no exception occurs** in the `try` block.
+
+```python
+try:
+    number = int(input("Enter number: "))
+
+except ValueError:
+    print("Invalid input")
+
+else:
+    print("Valid number:", number)
+```
+
+Flow:
+
+```text
+try
+ │
+ ├── exception → except
+ │
+ └── no exception → else
+```
+
+### Interview Question
+
+**Q: When does the `else` block execute?**
+
+> The `else` block executes only when the `try` block completes successfully without raising an exception.
+
+---
+
+# 20. `finally` Block
+
+`finally` executes **whether an exception occurs or not**.
+
+```python
+try:
+    number = int(input("Enter number: "))
+
+except ValueError:
+    print("Invalid input")
+
+finally:
+    print("Execution completed")
+```
+
+If an exception occurs:
+
+```text
+Invalid input
+Execution completed
+```
+
+If no exception occurs:
+
+```text
+Execution completed
+```
+
+### Common Use
+
+`finally` is commonly used for cleanup operations such as:
+
+* Closing files
+* Closing database connections
+* Releasing resources
+* Closing network connections
+
+---
+
+# 21. Complete Exception Handling Structure
+
+```python
+try:
+    # risky code
+
+except SomeException:
+    # handle exception
+
+else:
+    # executes when no exception occurs
+
+finally:
+    # always executes
+```
+
+### Easy Memory Trick
+
+```text
+TRY      → Try this code
+EXCEPT   → Problem? Handle it
+ELSE     → No problem? Do this
+FINALLY  → Always do this
+```
+
+---
+
+# 22. Exception Handling Flow
+
+```text
+             try
+              |
+        Exception?
+        /          \
+      YES           NO
+       |             |
+    except          else
+       \             /
+        \           /
+          finally
+             |
+          End
+```
+
+---
+
+# 23. Real-World Example
+
+Suppose an application receives a user's age.
+
+```python
+try:
+    age = int(input("Enter your age: "))
+
+except ValueError:
+    print("Age must be a number")
+
+else:
+    print("Age accepted:", age)
+
+finally:
+    print("Request processing completed")
+```
+
+Possible scenarios:
+
+### Input
+
+```text
+25
+```
+
+Output:
+
+```text
+Age accepted: 25
+Request processing completed
+```
+
+### Input
+
+```text
+abc
+```
+
+Output:
+
+```text
+Age must be a number
+Request processing completed
+```
+
+---
+
+# 24. Most Important Interview Questions
+
+## Q1. What is list slicing?
+
+**Answer:**
+
+List slicing is a way to extract a portion of a list using:
+
+```python
+list[start:end:step]
+```
+
+The `end` index is excluded.
+
+---
+
+## Q2. How do you reverse a list?
+
+```python
+numbers[::-1]
+```
+
+or:
+
+```python
+numbers.reverse()
+```
+
+---
+
+## Q3. Difference between `sort()` and `sorted()`?
+
+| `sort()`                                       | `sorted()`                |
+| ---------------------------------------------- | ------------------------- |
+| List method                                    | Built-in function         |
+| Modifies original list                         | Returns a new sorted list |
+| Used only with mutable sequences such as lists | Works with any iterable   |
+
+---
+
+## Q4. What is a set?
+
+> A set is a collection of unique elements. It automatically removes duplicates and supports efficient membership testing and set operations.
+
+---
+
+## Q5. How do you create an empty set?
+
+```python
+set()
+```
+
+Not:
+
+```python
+{}
+```
+
+because `{}` creates an empty dictionary.
+
+---
+
+## Q6. Difference between `remove()` and `discard()`?
+
+```text
+remove()  → missing element → KeyError
+discard() → missing element → no error
+```
+
+---
+
+## Q7. What is a dictionary?
+
+> A dictionary is a mutable mapping that stores data as key-value pairs.
+
+Example:
+
+```python
+user = {
+    "name": "Bhupendra",
+    "age": 25
+}
+```
+
+---
+
+## Q8. Difference between `keys()`, `values()` and `items()`?
+
+```text
+keys()   → keys
+values() → values
+items()  → key-value pairs
+```
+
+---
+
+## Q9. What is list comprehension?
+
+> List comprehension is a concise syntax for creating a list from an iterable, optionally applying a condition.
+
+Example:
+
+```python
+squares = [x * x for x in range(5)]
+```
+
+---
+
+## Q10. What is dictionary comprehension?
+
+> It is a concise way to create dictionaries using an expression and iteration.
+
+```python
+squares = {
+    x: x * x
+    for x in range(5)
+}
+```
+
+---
+
+## Q11. What is exception handling?
+
+> Exception handling is a mechanism used to handle runtime errors gracefully using `try`, `except`, `else`, and `finally`.
+
+---
+
+## Q12. Difference between `except` and `finally`?
+
+```text
+except  → executes when a matching exception occurs
+finally → executes regardless of exception
+```
+
+---
+
+## Q13. When does `else` execute?
+
+Only when the `try` block executes successfully without an exception.
+
+---
+
+## Q14. Why use specific exceptions?
+
+Instead of:
+
+```python
+except:
+```
+
+prefer:
+
+```python
+except ValueError:
+```
+
+because it handles the expected error specifically and doesn't hide unrelated programming errors.
+
+---
+
+# 25. ⭐⭐⭐ Must Remember
+
+```text
+LIST
+ ├── slicing → [start:end:step]
+ ├── reverse → [::-1]
+ ├── len()
+ ├── max()
+ ├── min()
+ └── sort(reverse=True)
+
+SET
+ ├── unique elements
+ ├── add()
+ ├── update()
+ ├── remove()   → KeyError if missing
+ ├── discard()  → no error if missing
+ └── empty set → set()
+
+DICTIONARY
+ ├── key → value
+ ├── d[key]
+ ├── pop()
+ ├── popitem()
+ ├── keys()
+ ├── values()
+ └── items()
+
+COMPREHENSION
+ ├── list → [expression for item in iterable]
+ └── dict → {key: value for item in iterable}
+
+EXCEPTION HANDLING
+ ├── try
+ ├── except
+ ├── else    → no exception
+ └── finally → always executes
+```
+
+# Final Interview Recall
+
+If the interviewer asks about this entire topic, remember this sequence:
+
+```text
+LIST
+   ↓
+SLICING
+   ↓
+BUILT-IN FUNCTIONS
+   ↓
+SET
+   ↓
+DICTIONARY
+   ↓
+COMPREHENSIONS
+   ↓
+EXCEPTION HANDLING
+   ↓
+TRY → EXCEPT → ELSE → FINALLY
+```
+
+The most important interview differences to remember:
+
+```text
+remove() vs discard()
+sort() vs sorted()
+set() vs {}
+keys() vs values() vs items()
+try vs except vs else vs finally
+list comprehension vs normal loop
+dictionary comprehension
+```
+================================================
+===========================================================
+# OOPS
+Here is a comprehensive master cheat sheet for Python Object-Oriented Programming (OOP) covering all fundamental concepts, core pillars, and practical code patterns.
+
+---
+
+### **1. Core Concepts: Class, Object, `self`, and `__init__**`
+
+* **Class:** The structural blueprint/template.
+* **Object:** An instance created from the class blueprint.
+* **`__init__` Method:** The constructor that initializes attributes when an object is instantiated.
+* **`self` Keyword:** Refers to the specific instance calling the method or accessing the data.
+
+```python
+class Employee:
+    # Class attribute (shared by all instances)
+    company = "TechCorp"
+
+    def __init__(self, name: str, salary: float):
+        # Instance attributes (unique to each instance)
+        self.name = name
+        self.salary = salary
+
+    def get_details(self) -> str:
+        return f"Employee: {self.name} | Salary: ${self.salary}"
+
+# Creating Objects
+emp1 = Employee("Alice", 85000)
+emp2 = Employee("Bob", 92000)
+
+print(emp1.get_details())  # Employee: Alice | Salary: $85000
+
+```
+
+---
+
+### **2. The Four Pillars of OOP**
+
+#### **I. Encapsulation (Data Hiding & Protection)**
+
+Restricts direct access to variables and methods to prevent unintended modifications.
+
+* **Public:** `self.var` (Accessible everywhere)
+* **Protected:** `self._var` (Convention indicating internal use)
+* **Private:** `self.__var` (Name-mangled; inaccessible directly from outside)
+
+```python
+class BankAccount:
+    def __init__(self, balance: float):
+        self.__balance = balance  # Private attribute
+
+    def deposit(self, amount: float):
+        if amount > 0:
+            self.__balance += amount
+
+    def get_balance(self) -> float:
+        return self.__balance
+
+account = BankAccount(1000)
+account.deposit(500)
+print(account.get_balance()) # Output: 1500
+# print(account.__balance)   # Raises AttributeError
+
+```
+
+#### **II. Inheritance**
+
+Allows a child class to inherit properties and methods from a parent class using `super()`.
+
+```python
+class ParentVehicle:
+    def __init__(self, brand: str):
+        self.brand = brand
+
+    def start_engine(self):
+        print(f"{self.brand} engine started.")
+
+class ElectricCar(ParentVehicle):
+    def __init__(self, brand: str, battery_size: int):
+        super().__init__(brand)  # Calls parent constructor
+        self.battery_size = battery_size
+
+    def charge(self):
+        print(f"Charging {self.battery_size}kWh battery.")
+
+tesla = ElectricCar("Tesla", 85)
+tesla.start_engine()  # Inherited method
+tesla.charge()        # Child method
+
+```
+
+#### **III. Polymorphism**
+
+Allows different classes to implement methods with the same name, providing a uniform interface.
+
+```python
+class Rectangle:
+    def __init__(self, width: float, height: float):
+        self.width = width
+        self.height = height
+
+    def area((self) -> float:
+        return self.width * self.height
+
+class Circle:
+    def __init__(self, radius: float):
+        self.radius = radius
+
+    def area(self) -> float:
+        return 3.14159 * (self.radius ** 2)
+
+# Polymorphic processing
+shapes = [Rectangle(10, 5), Circle(7)]
+for shape in shapes:
+    print(f"Area: {shape.area()}")
+
+```
+
+#### **IV. Abstraction**
+
+Hides complex implementation details and enforces specific method signatures across subclass implementations using the `abc` module.
+
+```python
+from abc import ABC, abstractmethod
+
+class DataProcessor(ABC):
+    @abstractmethod
+    def process_data(self, data):
+        pass  # Subclasses MUST implement this method
+
+class CSVProcessor(DataProcessor):
+    def process_data(self, data):
+        print(f"Processing CSV payload: {data}")
+
+processor = CSVProcessor()
+processor.process_data("id,name\n1,Alex")
+
+```
+
+---
+
+### **3. Class Methods, Static Methods & Properties**
+
+| Method / Decorator | First Parameter | Can Access Class State (`cls`)? | Can Access Instance State (`self`)? | Use Case |
+| --- | --- | --- | --- | --- |
+| **Instance Method** | `self` | Yes | Yes | Modifying instance state |
+| **`@classmethod`** | `cls` | Yes | No | Factory constructors, class-wide state |
+| **`@staticmethod`** | None | No | No | Utility functions isolated from state |
+| **`@property`** | `self` | Yes | Yes | Getter/setter interface for attributes |
+
+```python
+class User:
+    def __init__(self, username: str):
+        self._username = username
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(data["username"])  # Alternative Constructor
+
+    @staticmethod
+    def is_valid_username(name: str) -> bool:
+        return len(name) >= 3
+
+    @property
+    def username(self) -> str:
+        return self._username.upper()
+
+user = User.from_dict({"username": "johndoe"})
+print(user.username)  # JOHNDOE
+
+```
+
+---
+
+### **4. Essential Dunder (Magic) Methods**
+
+Dunder methods enable custom behavior for built-in operations (string formatting, comparison, math operations).
+
+```python
+class Book:
+    def __init__(self, title: str, pages: int):
+        self.title = title
+        self.pages = pages
+
+    # Friendly string output for end-users
+    def __str__(self):
+        return f"'{self.title}' ({self.pages} pages)"
+
+    # Formal object representation for debugging
+    def __repr__(self):
+        return f"Book(title='{self.title}', pages={self.pages})"
+
+    # Overloading equality operator (==)
+    def __eq__(self, other):
+        return isinstance(other, Book) and self.pages == other.pages
+
+b1 = Book("Python 101", 300)
+b2 = Book("Data Structures", 300)
+print(str(b1))      # 'Python 101' (300 pages)
+print(b1 == b2)     # True
+
+```
